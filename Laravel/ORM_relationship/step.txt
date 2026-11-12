@@ -1,0 +1,8 @@
+1. php artisan migrate:refresh //if use old database
+2. php artisan migrate
+3.  php artisan make:model Product -mscr
+4. php artisan migrate --seed //បន្ទាប់ពីកែនៅលើfolder migrations , productSeeder, Product,databaseSeeder,...
+5.  
+6.
+7.
+8. 

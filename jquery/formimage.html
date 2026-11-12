@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <form id="productForm">
+        <input type="text" id="title" placeholder="title"><br>
+        <input type="number" id="price" placeholder="price"><br>
+        <input type="number" id="qty" placeholder="qty"><br>
+        <input type="file" id="image"><br>
+        <img id="preview" width="100px"> <br>
+        <textarea id="descript"></textarea>
+
+        <button type="submit">submit</button>
+    </form>
+
+    <main>
+        <table border="1">
+            <thead>
+                <th>id</th>
+                <th>title</th>
+                <th>price</th>
+                <th>qty</th>
+                <th>image</th>
+                <th>description</th>
+                <th>action</th>
+            </thead>
+            <tbody id="display">
+
+            </tbody>
+        </table>
+    </main>
+</body>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script>
+       $(document).ready(function(){
+          $('#image').on('change', function(){
+            $('#preview').attr('src',URL.createObjectURL(this.files[0]));
+
+          })
+
+          function clearForm(){
+            $('#preview').attr('src','');
+            $('#productForm')[0].reset();
+          }
+
+          $('#productForm').on('submit',function(e){
+            e.preventDefault();
+            let formData = new FormData();
+            formData.append('id',1);
+            formData.append('title',$('#title').val());
+            formData.append('price',$('#price').val());
+            formData.append('qty',$('#qty').val());
+            formData.append('description',$('#descript').val());
+            formData.append('image',$('#image')[0].files[0]);
+
+            let file = formData.get('image');
+            let imageURL = URL.createObjectURL(file);
+
+            $('#display').html(`
+               <tr>
+                   <td>${formData.get('id')}</td> 
+                   <td>${formData.get('title')}</td> 
+                   <td>${formData.get('price')}</td> 
+                   <td>${formData.get('qty')}</td>
+                   <td>
+                     <img src='${imageURL}' width="100px" /> 
+                   </td> 
+                   <td>${formData.get('description')}</td>
+                   <td>
+                      <button>view</button>
+                      <button>edit</button>
+                      <button>delete</button>
+                   </td>
+               </tr>
+            
+            `);
+            clearForm();
+          })
+
+          
+       });
+</script>
+</html>

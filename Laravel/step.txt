@@ -1,0 +1,12 @@
+step create relationship manyToone:
+1.php artisan make:model 'name_of_model'
+php artisan make:migration create_posts_table
+php artisan migrate
+php artisan db:seed --class=PostSeeder
+2.php artisan make:model Profile -m
+3.php artisan make:seeder ProductSeeder
+4.php artisan make:controller OneToManyController
+5.
+6.
+7.
+8.

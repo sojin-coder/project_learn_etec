@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>jQuery Lesson 1</title>
+</head>
+<body>
+
+    <!-- <h1 id="title">Hello World</h1>
+    <input type="text" id="name" value="Raksa">
+    <button id="btn">Click me</button>
+    <h2 id="result"></h2> -->
+    <!-- <button id="btn">Say hello</button>
+    <h2 id="result"></h2> -->
+    <!-- <select id="gender">
+    <option value="">Choose Gender</option>
+    <option value="Male">Male</option>
+    <option value="Female">Female</option>
+</select>
+
+<h2 id="result"></h2> -->
+<!-- <button class="btn" data-id="1">Product 1</button>
+<button class="btn" data-id="2">Product 2</button>
+<button class="btn" data-id="3">Product 3</button>
+
+<h2 id="result"></h2> -->
+<!-- <form action="" id="userFrom">
+    <input type="text" id="name" placeholder="Enter your name">
+    <button type="submit">Submit</button>
+</form>
+<h2 id="result"></h2> -->
+<!-- <form id="loginForm">
+
+    <input type="text" id="username" placeholder="Username">
+
+    <button type="submit">Login</button>
+
+</form>
+
+<h2 id="result"></h2> -->
+<!-- <input type="text" name="name" id="name" placeholder="Enter your name">
+<h2 id="result"></h2>
+<input type="file" name="" id="image">
+<img src="" alt="" id="preview" width="200px"> -->
+<h2 id="box" style="display: none;">hello</h2>
+<button id="btn">Show / Hide</button>
+
+
+
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script>
+        $(document).ready(function(){
+            $("#btn").click(function(){
+                $("#box").toggle(); // ប្តូររវាង Show និង Hide
+            });
+        });
+    
+       
+      
+
+
+        $(document).ready(function(){
+            $("#image").on("change",function(){
+            $("#preview").attr("src", URL.createObjectURL(this.files[0]));
+        })
+    });
+
+        $("#name").on("keyup",function(){
+            let name = $(this).val();
+            $("#result").text("Hello : " + name);
+        })
+        // $("#loginForm").on("submit",function(e){
+        //     e.preventDefault();
+        //     let name = $("#username").val();
+        //     $("#result").text("Welcome : " + name);
+        // })
+
+        // $("#userFrom").on("submit",function(e){
+        //     e.preventDefault();
+        //     let name = $("#name").val();
+        //     $("#result").text("Hello : " + name);
+        // })
+
+        // $("#title").text("Hello Fri");
+        // $("#title").html("<h2>Hello <br>Fri</h2>");
+        // let name = $("#name").val("Me");
+        // console.log(name);
+
+        // $("#btn").click(function(){
+        //     $("#result").text("You clicked the button");
+        // });
+        // $("#btn").click(function(){
+        //     let name = $("#name").val();
+        //     $("#result").text("Hello " + name);
+        // });
+
+        // $("#btn").on("click",function(){
+        //    $("#result").text("Hello Fri ❤️");
+        // });
+        // $("#gender").on("change",function(){
+        //     // let gender = $(this).val();
+        //       let gender = $("#gender").val();
+        //     $("#result").text("You selected: " + gender);
+        // });
+        // $(".btn").on("click",function(){
+        //    let id = $(this).data("id");
+        //       $("#result").text("You selected Product ID: " + id);
+        // })
+        
+    </script>
+
+</body>
+</html>

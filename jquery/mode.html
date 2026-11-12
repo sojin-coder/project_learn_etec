@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="km">
+<head>
+  <meta charset="UTF-8">
+  <title>Light & Dark Mode</title>
+  <style>
+    /* ១. កំណត់ពណ៌សម្រាប់ Light Mode (មានពន្លឺ) ជា Standard */
+    :root {
+      --bg-color: #ffffff;
+      --text-color: #1a1a1a;
+      --card-bg: #f0f0f0;
+      --glow-effect: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    /* ២. កំណត់ពណ៌សម្រាប់ Dark Mode (អត់ពន្លឺ/ងងឹត) */
+    [data-theme="dark"] {
+      --bg-color: #121212;
+      --text-color: #ffffff;
+      --card-bg: #1e1e1e;
+      --glow-effect: 0 0 15px rgba(255, 255, 255, 0.4); /* បន្ថែមពន្លឺ Glow តិចៗ */
+    }
+
+    /* ៣. យក Style ទៅប្រើលើ Element ទាំងមូល */
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      font-family: Arial, sans-serif;
+      transition: all 0.3s ease; /* ធ្វើឲ្យការប្តូរពណ៌រលូន */
+      padding: 20px;
+    }
+
+    .container {
+      background-color: var(--card-bg);
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: var(--glow-effect);
+    }
+
+    button {
+      padding: 10px 20px;
+      cursor: pointer;
+      border: none;
+      border-radius: 5px;
+      font-weight: bold;
+    }
+  </style>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+  <button id="toggle-btn">🌙 ដូរទៅ Dark Mode</button>
+
+  <div class="container" style="margin-top: 20px;">
+    <h1 id="h1">Hello World</h1>
+    <input type="text" id="name" placeholder="បញ្ចូលឈ្មោះ...">
+  </div>
+
+  <script>
+    $(document).ready(function() {
+    
+      $('#toggle-btn').on('click', function() {
+        let currentTheme = $('html').attr('data-theme');
+
+        if (currentTheme === 'dark') {
+          
+          $('html').removeAttr('data-theme');
+          $(this).text('🌙 ដូរទៅ Dark Mode');
+        } else {
+         
+          $('html').attr('data-theme', 'dark');
+          $(this).text('☀️ ដូរទៅ Light Mode');
+        }
+      });
+    });
+  </script>
+
+</body>
+</html>

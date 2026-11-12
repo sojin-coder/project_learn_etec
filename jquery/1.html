@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Management</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen p-8 font-sans">
+
+    <div class="max-w-5xl mx-auto space-y-8">
+        
+        <!-- Form Section -->
+        <div class="bg-slate-800 p-6 rounded-xl shadow-md border border-slate-700">
+            <h2 id="formTitle" class="text-xl font-bold mb-4 text-emerald-400">Add Product</h2>
+            
+            <form id="productForm" class="space-y-4">
+                <!-- Hidden Input សម្រាប់ស្គាល់ Index ពេលកែប្រែ (Edit) -->
+                <input type="hidden" id="editIndex" value="-1">
+
+                <div>
+                    <label class="block text-sm mb-1 text-slate-400">Title</label>
+                    <input type="text" id="title" placeholder="title" required class="w-full bg-slate-700 border border-slate-600 rounded px-3 py-2 text-white focus:outline-none focus:border-emerald-500">
+                </div>
+                
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm mb-1 text-slate-400">Price</label>
+                        <input type="number" id="price" placeholder="price" required class="w-full bg-slate-700 border border-slate-600 rounded px-3 py-2 text-white focus:outline-none focus:border-emerald-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm mb-1 text-slate-400">Quantity</label>
+                        <input type="number" id="qty" placeholder="qty" required class="w-full bg-slate-700 border border-slate-600 rounded px-3 py-2 text-white focus:outline-none focus:border-emerald-500">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm mb-1 text-slate-400">Image</label>
+                    <input type="file" id="image" class="w-full text-sm text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:bg-emerald-600 file:text-white hover:file:bg-emerald-500 cursor-pointer">
+                </div>
+
+                <div>
+                    <img id="preview" width="100px" class="rounded border border-slate-600 my-2 hidden"> 
+                </div>
+
+                <div>
+                    <label class="block text-sm mb-1 text-slate-400">Description</label>
+                    <textarea id="descript" class="w-full bg-slate-700 border border-slate-600 rounded px-3 py-2 text-white focus:outline-none focus:border-emerald-500"></textarea>
+                </div>
+
+                <div class="flex gap-2">
+                    <button type="submit" id="submitBtn" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-semibold py-2 px-4 rounded transition">Submit</button>
+                    <button type="button" id="cancelBtn" class="w-1/3 bg-slate-600 hover:bg-slate-500 text-white font-semibold py-2 px-4 rounded transition hidden">Cancel</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Table Section -->
+        <main class="bg-slate-800 rounded-xl shadow-md border border-slate-700 overflow-hidden">
+            <table border="1" class="w-full text-left border-collapse text-sm text-slate-300">
+                <thead class="bg-slate-700 text-slate-200">
+                    <tr>
+                        <th class="p-3 border border-slate-600">ID</th>
+                        <th class="p-3 border border-slate-600">Title</th>
+                        <th class="p-3 border border-slate-600">Price</th>
+                        <th class="p-3 border border-slate-600">Qty</th>
+                        <th class="p-3 border border-slate-600">Image</th>
+                        <th class="p-3 border border-slate-600">Description</th>
+                        <th class="p-3 border border-slate-600 text-center">Action</th>
+                    </tr>
+                </thead>
+                <tbody id="display">
+                    <!-- Dynamic Rows -->
+                </tbody>
+            </table>
+        </main>
+
+    </div>
+
+    <!-- View Modal (ផ្ទាំង Detail) -->
+    <div id="viewModal" class="fixed inset-0 bg-black/70 hidden items-center justify-center p-4">
+        <div class="bg-slate-800 p-6 rounded-xl border border-slate-700 max-w-md w-full space-y-4">
+            <h3 class="text-xl font-bold text-emerald-400 border-b border-slate-700 pb-2">Product Detail</h3>
+            <div id="modalContent" class="space-y-2 text-slate-300">
+                <!-- Data display -->
+            </div>
+            <button id="closeModal" class="w-full bg-slate-700 hover:bg-slate-600 text-white py-2 rounded transition">Close</button>
+        </div>
+    </div>
+
+</body>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script>
+    $(document).ready(function(){
+        let products = []; // Array សម្រាប់រក្សាទុកទិន្នន័យ
+        let nextId = 1;
+
+        // Image Preview
+        $('#image').on('change', function(){
+            if (this.files && this.files[0]) {
+                $('#preview').attr('src', URL.createObjectURL(this.files[0])).removeClass('hidden');
+            }
+        });
+
+        // Function សម្រាប់លាងសម្អាត Form
+        function clearForm(){
+            $('#preview').attr('src', '').addClass('hidden');
+            $('#productForm')[0].reset();
+            $('#editIndex').val('-1');
+            $('#formTitle').text('Add Product');
+            $('#submitBtn').text('Submit');
+            $('#cancelBtn').addClass('hidden');
+        }
+
+        // Function សម្រាប់ render ទិន្នន័យចូល Table
+        function renderTable() {
+            let html = '';
+            products.forEach((prod, index) => {
+                html += `
+                    <tr>
+                        <td class="p-3 border border-slate-600">${prod.id}</td> 
+                        <td class="p-3 border border-slate-600 font-semibold">${prod.title}</td> 
+                        <td class="p-3 border border-slate-600 text-emerald-400">$${prod.price}</td> 
+                        <td class="p-3 border border-slate-600">${prod.qty}</td>
+                        <td class="p-3 border border-slate-600">
+                            ${prod.imageURL ? `<img src='${prod.imageURL}' width="60px" class="h-12 object-cover rounded" />` : 'No Image'}
+                        </td> 
+                        <td class="p-3 border border-slate-600">${prod.description}</td>
+                        <td class="p-3 border border-slate-600 text-center space-x-1">
+                            <button class="btn-view bg-blue-600 hover:bg-blue-500 text-white px-2 py-1 rounded text-xs" data-index="${index}">View</button>
+                            <button class="btn-edit bg-amber-600 hover:bg-amber-500 text-white px-2 py-1 rounded text-xs" data-index="${index}">Edit</button>
+                            <button class="btn-delete bg-red-600 hover:bg-red-500 text-white px-2 py-1 rounded text-xs" data-index="${index}">Delete</button>
+                        </td>
+                    </tr>
+                `;
+            });
+            $('#display').html(html);
+        }
+
+        // Submit Form (Add ឬ Edit)
+        $('#productForm').on('submit', function(e){
+            e.preventDefault();
+            
+            let editIdx = parseInt($('#editIndex').val());
+            let file = $('#image')[0].files[0];
+            
+            if (editIdx === -1) {
+                // ============= ADD NEW =============
+                let imageURL = file ? URL.createObjectURL(file) : '';
+                let newProduct = {
+                    id: nextId++,
+                    title: $('#title').val(),
+                    price: $('#price').val(),
+                    qty: $('#qty').val(),
+                    description: $('#descript').val(),
+                    imageURL: imageURL
+                };
+                products.push(newProduct);
+            } else {
+                // ============= UPDATE (EDIT) =============
+                products[editIdx].title = $('#title').val();
+                products[editIdx].price = $('#price').val();
+                products[editIdx].qty = $('#qty').val();
+                products[editIdx].description = $('#descript').val();
+                
+                // បើមានជ្រើសរើសរូបភាពថ្មី ចាំប្តូររូបភាព
+                if (file) {
+                    products[editIdx].imageURL = URL.createObjectURL(file);
+                }
+            }
+
+            renderTable();
+            clearForm();
+        });
+
+        // ============= DELETE FUNCTION =============
+        $(document).on('click', '.btn-delete', function(){
+            let index = $(this).data('index');
+            if(confirm('តើអ្នកពិតជាចង់លុបទំនិញនេះមែនទេ?')) {
+                products.splice(index, 1);
+                renderTable();
+                clearForm();
+            }
+        });
+
+        // ============= EDIT FUNCTION =============
+        $(document).on('click', '.btn-edit', function(){
+            let index = $(this).data('index');
+            let prod = products[index];
+
+            $('#editIndex').val(index);
+            $('#title').val(prod.title);
+            $('#price').val(prod.price);
+            $('#qty').val(prod.qty);
+            $('#descript').val(prod.description);
+
+            if(prod.imageURL) {
+                $('#preview').attr('src', prod.imageURL).removeClass('hidden');
+            } else {
+                $('#preview').addClass('hidden');
+            }
+
+            $('#formTitle').text('Edit Product');
+            $('#submitBtn').text('Update Product');
+            $('#cancelBtn').removeClass('hidden');
+        });
+
+        // ============= VIEW FUNCTION =============
+        $(document).on('click', '.btn-view', function(){
+            let index = $(this).data('index');
+            let prod = products[index];
+
+            let details = `
+                <p><strong>ID:</strong> ${prod.id}</p>
+                <p><strong>Title:</strong> ${prod.title}</p>
+                <p><strong>Price:</strong> $${prod.price}</p>
+                <p><strong>Quantity:</strong> ${prod.qty}</p>
+                <p><strong>Description:</strong> ${prod.description || 'N/A'}</p>
+                ${prod.imageURL ? `<div class="mt-2"><img src="${prod.imageURL}" class="w-full max-h-48 object-contain rounded border border-slate-600"></div>` : ''}
+            `;
+
+            $('#modalContent').html(details);
+            $('#viewModal').removeClass('hidden').addClass('flex');
+        });
+
+        // បិទ View Modal
+        $('#closeModal').on('click', function(){
+            $('#viewModal').addClass('hidden').removeClass('flex');
+        });
+
+        // ប៊ូតុង Cancel ពេល Edit
+        $('#cancelBtn').on('click', function(){
+            clearForm();
+        });
+    });
+</script>
+</html>

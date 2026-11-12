@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>jQuery Example</title>
+  <!-- Load jQuery Library -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+
+  <h1 class="h1" id="h1"></h1>
+  <input type="text" id="name" placeholder="Enter name">
+
+  <input type="file" id="image"> <br><br>
+  <!-- Image tag to display the preview -->
+  <img id="preview" width="100px" style="display: none;">
+
+  <script>
+    $(document).ready(function() {
+      $('#image').on('change', function() {
+        let file = this.files[0];
+
+        if (file) {
+         
+          let imageURL = URL.createObjectURL(file);
+          
+          // Set the src attribute and display the image
+          $('#preview').attr('src', imageURL).show();
+        }
+      });
+    });
+    </script>
+
+  <script>
+    $(document).ready(function() {
+      // Set initial text inside <h1>
+      $('#h1').text("Hello");
+
+      // Get value from input field
+      let name = $('#name').val();
+
+      // Append HTML elements inside <h1>
+      $('#h1').append("<p>Laptop 1</p>");
+      $('#h1').append("<p>Laptop 2</p>");
+
+      // To clear everything inside <h1>:
+      // $('#h1').empty();
+      
+    });
+  </script>
+
+</body>
+</html>
